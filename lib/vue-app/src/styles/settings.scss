@@ -1,0 +1,575 @@
+/**
+ * src/styles/settings.scss
+ *
+ * Configures SASS variables and Vuetify overwrites
+ */
+
+// https://vuetifyjs.com/features/sass-variables/`
+@use 'vuetify/settings' with (
+    // Place SASS variable overrides here
+    $app-bar-background: #232F3E,
+    $app-bar-color: #FFFFFF,
+    $button-background: #003181,
+    $button-color: #FFFFFF,
+    $button-plain-opacity: 1,
+    $button-text-transform: none,
+    $table-border-color: rgba(0, 0, 0, 0.10),
+    $table-column-padding: 10px,
+    $table-header-font-weight: 700,
+);
+
+// Disable all Vuetify transitions
+div * {
+    transition: none !important;
+}
+// Blinking animation for the assistant's cursor
+.blink {
+    animation: blinking 1s infinite;
+}
+@keyframes blinking {
+    0% { opacity: 0%; }
+    100% { opacity: 100%; }
+}
+
+// ///////////////////////////////
+// General UI
+// ///////////////////////////////
+html,body {
+    font-family: Ember;
+}
+.page-content {
+    padding: 25px 50px 25px 50px !important;
+    margin: 0px;
+}
+.page-title {
+    font-family: Ember Light !important;
+    font-size: 28px;
+    text-align: center;
+}
+.menu-button {
+    height: 60px !important;
+    min-width: 300px;
+    max-width: 450px;
+    text-align: center;
+    margin: auto;
+}
+.menu-button:hover {
+    background-color: #2074d5;
+}
+.plain-button {
+    background-color: #fff;
+    color: #2074d5;
+    font-weight: bold;
+}
+.plain-button:hover {
+    background-color: #f1f3f3;
+}
+
+// ///////////////////////////////
+// Alerts
+// ///////////////////////////////
+.alert {
+    padding: 10px;
+    border-bottom: 2px solid white;
+}
+.alert-container {
+    margin-bottom: 25px;
+}
+
+// ///////////////////////////////
+// Top App Bar
+// ///////////////////////////////
+.v-app-bar-title {
+    margin-left: 0px !important;
+}
+.app-bar-title {
+    color: #FFF;
+    text-decoration: none;
+    padding-right: 10px;
+}
+.app-bar-logo {
+    max-width: 65px;
+    margin: 20px;
+}
+.app-bar-logo img {
+    width: 45px;
+}
+.app-bar-user-menu {
+    max-width: unset;
+    position: relative;
+}
+.app-bar-user-photo {
+    max-width: 80px;
+}
+.app-bar-user-photo img {
+    width: 45px;
+    height: 45px;
+    border-radius: 50%;
+    object-fit: cover;
+    margin-top: 9px;
+    margin-left: 15px;
+    margin-right: 30px;
+}
+
+// ///////////////////////////////
+// Side Navigation and Help Panel
+// ///////////////////////////////
+.sidebar-title {
+    text-decoration: none;
+    font-weight: bold;
+    font-size: 18px;
+    text-transform: capitalize;
+    color: black;
+}
+.sidebar-link {
+    color: #000 !important;
+    padding: 2px 0 2px 0px !important;
+    min-height: 22px !important;
+    font-size: 14px;
+}
+.sidebar-link span {
+    display: none;
+}
+.sidebar-link div:hover {
+    color: #2074d5;
+}
+.sidebar-link-active div {
+    color: #2074d5 !important;
+    font-weight: 700 !important;
+}
+.sidebar-closed:hover {
+    background-color: #f1f3f3 !important;
+    cursor: pointer;
+}
+.sidebar-link-group {
+    color: #000 !important;
+    padding: 10px 0 2px 0px !important;
+    margin-left: -33px;
+    min-height: 22px !important;
+    font-size: 16px;
+    font-weight: bold;
+}
+.sidebar-link-group i {
+    font-size: 32px;
+    left: 5px;
+    top: -2px;
+}
+.sidebar-sub-item {
+    color: #000 !important;
+    padding: 2px 0 2px 10px !important;
+    min-height: 22px !important;
+    font-size: 14px;
+    font-weight: bold;
+}
+.help-content {
+    padding: 25px;
+}
+.help-content h3 {
+    margin-top: 25px;
+    margin-bottom: 10px;
+    font-family: Ember Light;
+}
+.help-content p {
+    margin-top: 10px;
+    margin-bottom: 10px;
+    font-size: 14px;
+}
+.help-content li {
+    margin-left: 20px;
+    font-size: 14px;
+}
+.v-list-item-title {
+    font-size: 1em !important;
+    height: 20px !important;
+    padding-top: 2px;
+}
+
+// ///////////////////////////////
+// Buttons
+// ///////////////////////////////
+.primary-button {
+    background-color: #2074d5;
+    color: #fff;
+    font-weight: bold;
+    height: 32px !important;
+}
+.secondary-button {
+    background-color: #ff9900;
+    color: #000;
+    font-weight: bold;
+    height: 32px !important;
+}
+.outline-button {
+    background-color: white;
+    border-color: #2074d5;
+    border-width: 2px;
+    color: #2074d5;
+    font-weight: bold;
+    height: 32px !important;
+}
+.plaintext-button {
+    background-color: white;
+    color: #2074d5;
+    font-weight: bold;
+    height: 32px !important;
+}
+.outline-button:disabled {
+    border: 2px solid;
+}
+.outline-button:disabled .v-btn__overlay {
+    display: none;
+}
+.icon-button {
+    background-color: white;
+    color: #2074d5;
+    border: 2px solid #2074d5;
+    border-radius: 16px;
+    width: 32px !important;
+    height: 32px !important;
+}
+.action-button i {
+    font-size: 32px;
+    left: 5px;
+    height: 24px;
+}
+.action-button .v-btn__append {
+    margin: 0;
+}
+
+// ///////////////////////////////
+// Chat
+// ///////////////////////////////
+.chat-message-container {
+    white-space: pre-line;
+    padding: 0px;
+    min-width: 500px;
+}
+.chat-message-container * {
+    overflow-anchor: none;
+}
+.chat-header {
+    position: fixed;
+    top: 57px;
+    min-width: 500px;
+    padding-top: 25px;
+    padding-bottom: 15px;
+    background-color: white;
+    z-index: 2;
+}
+.chat-message-human {
+    margin: 25px 25px 0px 0px;
+    word-wrap: break-word;
+    line-height: 1.5em;
+    font-size: 14px;
+}
+.chat-message-assistant {
+    background-color:#f1f3f3;
+    margin: 25px 0px 0px 0px;
+    padding: 25px;
+    border-radius: 10px;
+    line-height: 1.5em;
+    border: 1px solid rgb(182, 190, 201);
+    word-wrap: break-word;
+    font-size: 14px;
+}
+.chat-input-stepper {
+    margin: 0px 15px 0px 15px;
+    padding: 10px;
+    width: 100%;
+}
+.chat-input-stepper-button {
+    padding: 5px 25px 5px 25px;
+    font-size: .95em;
+    opacity: 0.7;
+}
+.chat-input-stepper-button-selected {
+    font-weight: bold;
+    opacity: 1;
+}
+.chat-input-stepper div {
+    box-shadow: none;
+    overflow: hidden;
+}
+.chat-input-stepper-button .v-avatar {
+    // font-weight: bold;
+    font-size: 1em;
+    color: #232F3E;
+    background-color: #f1f3f3;
+    
+}
+.chat-input-stepper-button-selected .v-avatar {
+    font-weight: bold;
+    font-size: 1em;
+    color: #232F3E;
+    background-color: #f1f3f3;
+    
+}
+.chat-input-instructions {
+    margin-left: 5px;
+    margin-bottom: 14px;
+    font-size: .95em;
+}
+.chat-input-instructions.disabled {
+    color: #aaa;
+}
+textarea, input, .v-select__selection-text, .v-field__field .v-label.v-field-label  {
+    font-size: 14px !important;
+}
+::placeholder {
+    opacity: .55 !important;
+}
+.v-tabs {
+    border-bottom: 1px solid #d4dada;
+}
+.v-tab {
+    font-weight: bold;
+    color: #414d5c;
+    border-bottom: 1px solid #d4dada;
+}
+.v-tab:not(:first-child) {
+    border-left: 1px solid #d4dada;
+}
+.v-tab:hover  {
+    color: #2074d5;
+    cursor: pointer;
+}
+.v-tab--selected  {
+    color: #2074d5;
+}
+.v-tab--selected .v-tab__slider {
+    height: 3px;
+}
+
+
+// ///////////////////////////////
+// GenAI Insights
+// ///////////////////////////////
+.genai-insights-title-bar {
+    background-color: #d9edf7 !important;
+    cursor: default;
+}
+.genai-insights-title-bar span {
+    background-color: #d9edf7 !important;
+}
+.recommendation-panel {
+    margin-left: 11px;
+    margin-right: 11px;
+    font-size: 14px;
+}
+.v-switch .v-selection-control--dirty .v-switch__track {
+    background-color: #2074d5;
+    opacity: 1;
+}
+
+// ///////////////////////////////
+// Rephrase Diff
+// ///////////////////////////////
+.diff-title {
+    background-color: #d4dada !important;
+    opacity: 1;
+    cursor: default;
+}
+.diff-title span {
+    background-color: #d4dada !important;
+}
+.diff-text {
+    font-size: 14px;
+}
+.diff-text-removed {
+    background-color: #FFC7CB;
+}
+.diff-text-added {
+    background-color: #B7FFC4;
+}
+
+// ///////////////////////////////
+// Data tables
+// ///////////////////////////////
+li.v-pagination__item button, li.v-pagination__next button, li.v-pagination__prev button {
+    width: 20px !important;
+    height: 32px !important;
+    font-size: 14px;
+}
+li.v-pagination__next button, li.v-pagination__prev button {
+    font-size: 20px;
+}
+li.v-pagination__item--is-active button span.v-btn__content {
+    font-weight: 900 !important;
+    color: #222 !important;
+}
+li.v-pagination__item--is-active button span.v-btn__overlay {
+    display: none;
+}
+.v-data-table {
+    margin-left: 10px;
+    margin-right: 10px;
+    font-size: 14px;
+}
+thead, thead tr{
+    height: 24px;
+    margin-top: 5px !important;
+    margin-bottom: 5px !important;
+    padding-bottom: 5px;
+}
+.v-data-table__th {
+    height: 24px !important;
+    padding-top: 0 !important;
+    padding-bottom: 0 !important;
+}
+.v-data-table__th:not(:first-child) {
+    border-left: 1px solid hsla(0, 0%, 0%, 0.1);
+}
+.v-data-table__th i {
+    font-size: 32px !important;
+    margin-left: auto;
+}
+.v-list-item-title {
+    height: 24px !important;
+}
+.v-data-table__td {
+    border-top: 1px solid white;
+    border-bottom: 1px solid #f1f3f3 !important;
+}
+.recommended-table-row td {
+    background-color: #d9edf7;
+}
+.recommended-table-row td:first-child {
+    border-top-left-radius: 10px !important;
+    border-bottom-left-radius: 10px !important;
+}
+.recommended-table-row td:last-child {
+    border-top-right-radius: 10px !important;
+    border-bottom-right-radius: 10px !important;
+}
+.selected-table-row td {
+    background-color: #f2f8fd;
+    border-top: 1px #2074d5 solid !important;
+    border-bottom: 1px #2074d5 solid !important;
+}
+.selected-table-row td:first-child {
+    border-left: 1px #2074d5 solid !important;
+    border-top-left-radius: 10px !important;
+    border-bottom-left-radius: 10px !important;
+}
+.selected-table-row td:last-child {
+    border-right: 1px #2074d5 solid !important;
+    border-top-right-radius: 10px !important;
+    border-bottom-right-radius: 10px !important;
+}
+.v-data-table td i, .v-data-table th i {
+    font-size: 24px !important;
+    width: 32px;
+    height: 32px;
+}
+.v-data-table .v-data-table-header__sort-icon {
+    font-size: 32px !important;
+}
+.v-data-table td .v-checkbox div {
+    width: 28px;
+    height: 28px;
+    top: -4px;
+    left: 0px;
+}
+.v-data-table td i .mdi-checkbox-marked {
+    color: #2074d5;
+}
+.v-data-table .mdi-checkbox-blank-outline {
+    color: gray;
+    opacity: 1;
+}
+.v-data-table .mdi-minus-box {
+    color: #2074d5;
+    opacity: 1;
+}
+.v-btn:before {
+    opacity: 0 !important;
+} 
+.v-ripple__container {
+    opacity: 0 !important;
+}
+.v-data-table-progress th {
+    box-shadow: none !important;
+    padding-top: 40px !important;
+    color: #44494f;
+}
+.v-data-table-rows-loading {
+    display: none;
+}
+
+// ///////////////////////////////
+// Table View Form Inputs
+// ///////////////////////////////
+.form-input .mdi-close {
+    color: #2074d5;
+}
+.form-input .mdi-triangle-small-down {
+    font-size: 32px;
+    color: #2074d5;
+}
+.form-input .v-field__overlay {
+    border: 2px #999 solid;
+}
+.form-input .v-field__input {
+    padding-top: 4px;
+    padding-bottom: 4px;
+    min-height: 32px !important;
+}
+.form-input input:placeholder-shown {
+    font-style: italic;
+    color: #000;
+}
+.v-field__clearable {
+    left: 20px;
+}
+.v-select .v-field {
+    padding: 0;
+}
+// .form-input .v-chip {
+//     background-color: #d9edf7;
+//     opacity: 1;
+// }
+// .form-input .v-chip__underlay {
+//     display: none;
+// }
+// .form-input .v-chip .v-icon {
+//     color: #2074d5;
+// }
+.v-overlay-container .v-list {
+    border: 1px #7c8898 solid !important;
+    border-radius: 10px !important;
+    margin-top: 5px;
+    padding-top: 0;
+    padding-bottom: 0;
+    box-shadow: none;
+    font-size: 14px;
+}
+.v-overlay-container .v-list-item {
+    min-height: 30px !important;
+    border: 1px #fff solid;
+}
+.v-overlay-container .v-list-item:hover {
+    background-color: #f1f3f3;
+    min-height: 30px !important;
+    border: 1px #7c8898 solid !important;
+    border-radius: 10px;
+}
+.v-overlay-container .v-list-item--active {
+    background-color: #f2f8fd;
+    border: 1px #2074d5 solid !important;
+    border-radius: 10px;
+}
+.v-overlay-container .v-list-item--active:hover {
+    background-color: #f1f3f3;
+    border: 1px #2074d5 solid !important;
+    border-radius: 10px;
+}
+.v-overlay-container .v-list-item__overlay {
+    display: none;
+}
+.v-overlay-container .v-checkbox-btn {
+    max-height: 30px !important;
+}
+.v-data-table__th--sorted .v-icon {
+    color: #2074d5;
+    font-size: 22px;
+}

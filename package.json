@@ -1,0 +1,31 @@
+{
+  "name": "cdk-vue-app",
+  "version": "0.1.0",
+  "bin": {
+    "cdk-vue-app": "bin/cdk-vue-app.js"
+  },
+  "scripts": {
+    "build": "tsc",
+    "watch": "tsc -w",
+    "test": "jest",
+    "cdk": "cdk"
+  },
+  "devDependencies": {
+    "@types/jest": "29.5.12",
+    "@types/node": "20.12.7",
+    "aws-cdk": "2.139.1",
+    "jest": "29.7.0",
+    "ts-jest": "29.1.2",
+    "ts-node": "10.9.2",
+    "typescript": "5.4.5"
+  },
+  "dependencies": {
+    "@aws-amplify/ui-vue": "4.2.26",
+    "@aws-cdk/aws-lambda-python-alpha": "2.139.1-alpha.0",
+    "aws-amplify": "6.12.0",
+    "aws-cdk-lib": "2.187.0",
+    "cdk-nag": "2.28.149",
+    "constructs": "10.3.0",
+    "source-map-support": "0.5.21"
+  }
+}

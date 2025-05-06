@@ -1,17 +1,14 @@
-## My Project
+# GenAI Vue App
 
-TODO: Fill this README out!
+Resources:
+- [AWS CDK](https://aws.amazon.com/cdk/)
+- [Amazon Bedrock](https://aws.amazon.com/bedrock/)
+- [Vue.js](https://vue.js/)
+- [CloudScape Design System](https://cloudscape.design/)
+- [LangChain](https://www.langchain.com/)
 
-Be sure to:
-
-* Change the title in this README
-* Edit your repository description on GitHub
-
-## Security
-
-See [CONTRIBUTING](CONTRIBUTING.md#security-issue-notifications) for more information.
-
-## License
-
-This library is licensed under the MIT-0 License. See the LICENSE file.
-
+## Usage
+- `npm install`
+- `cdk deploy`
+- After deployment, wait 1-2 minutes for the CodeBuild build to complete.
+- Open the `VueAppUrl` URL (in CDK/CloudFormation outputs) to access the UI.
