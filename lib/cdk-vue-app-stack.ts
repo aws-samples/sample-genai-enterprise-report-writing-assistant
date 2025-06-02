@@ -10,8 +10,6 @@ import { VueAppDeploy } from "./constructs/vue-app-deploy";
 import { AwsSolutionsChecks, NagSuppressions } from "cdk-nag";
 import { DynamoDbTables } from "./constructs/dynamodb-db";
 
-const CUSTOM_APP_DOMAIN = "chat.awsurl.com"; // Example: "myapp.mydomain.com"
-
 export class CdkVueAppStack extends Stack {
   constructor(scope: Construct, id: string, props?: StackProps) {
     super(scope, id, props);
@@ -80,7 +78,6 @@ export class CdkVueAppStack extends Stack {
     // Add the CloudFront distribution to the Cognito app client's callback URLs
     cognito.addCallbackUrls([
       vueAppDeployment.cloudFrontDistributionUrl,
-      CUSTOM_APP_DOMAIN,
     ]);
 
     // Add NAG suppressions
