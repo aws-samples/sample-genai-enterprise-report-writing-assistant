@@ -1,6 +1,5 @@
 import { Aws, CfnOutput, RemovalPolicy } from "aws-cdk-lib";
 import { Construct } from "constructs";
-import { AuthorizationType } from "aws-cdk-lib/aws-apigateway";
 import {
   CfnAuthorizer,
   CfnIntegration,
@@ -10,7 +9,6 @@ import {
   CfnStage,
   WebSocketApi,
 } from "aws-cdk-lib/aws-apigatewayv2";
-import { LogGroup } from "aws-cdk-lib/aws-logs";
 import { NagSuppressions } from "cdk-nag";
 import { IFunction } from "aws-cdk-lib/aws-lambda";
 import { ServicePrincipal } from "aws-cdk-lib/aws-iam";
@@ -32,7 +30,7 @@ export class WebSocketApiGateway extends Construct {
     const webSocketApi = this.createWebSocketApi();
 
     // Create the authorizer
-    const authorizer = this.createAuthorizer(
+    this.createAuthorizer(
       webSocketApi.apiId,
       props.authorizerFunction
     );
@@ -162,19 +160,23 @@ export class WebSocketApiGateway extends Construct {
   }
 
   private createApiDeploymentStage(apiId: string): CfnStage {
-    const accessLogGroup = new LogGroup(this, "WebSocketAccessLogGroup", {
-      // logGroupName: "/aws/apigateway/websocket-access-logs",
-      removalPolicy: RemovalPolicy.DESTROY,
-    });
-    return new CfnStage(this, "WebSocketApiStage", {
+    const stage = new CfnStage(this, "WebSocketApiStage", {
       apiId: apiId,
       stageName: "dev",
       autoDeploy: true,
-      accessLogSettings: {
-        destinationArn: accessLogGroup.logGroupArn,
-        format:
-          "$context.eventType,$context.connectionId,$context.ip,$context.protocol,$context.requestId,$context.routeKey,$context.stage,$context.time,$context.requestTimeEpoch",
-      },
     });
+    
+    NagSuppressions.addResourceSuppressions(
+      stage,
+      [
+        {
+          id: "AwsSolutions-APIG1",
+          reason: "Access logging disabled for demo purposes to simplify deployment",
+        },
+      ],
+      true
+    );
+    
+    return stage;
   }
 }
