@@ -29,30 +29,25 @@ const { addAlert } = uiStore;
  * Helper functions
  */
 
-const isTokenStartOfXmlTag = (text: string) => {
-  const tokensThatStartXmlTags = ["</", "<JSON"];
-  return tokensThatStartXmlTags.includes(text.trim());
-};
-const isTokenEndOfXmlTag = (isReceivingXmlTag: boolean, text: string) => {
-  return isReceivingXmlTag && text === ">";
-};
 const isXmlTagStartOfJson = (tag: string) => {
-  return tag === "<JSON>";
+  const startTags = ["<JSON>", "<JSON"]
+  return startTags.some(word => tag.includes(word));
 };
 const isXmlTagEndOfJson = (tag: string) => {
-  return tag === "</JSON>";
+  const startTags = ["</JSON>", "</"," </JSON"]
+  return startTags.some(word => tag.includes(word));
 };
 const isTokenStartOfCodeBlock = (
   isReceivingRephrasedText: boolean,
   text: string
 ) => {
-  return !isReceivingRephrasedText && text.startsWith("```");
+  return !isReceivingRephrasedText && text.includes("```");
 };
 const isTokenEndOfCodeBlock = (
   isReceivingRephrasedText: boolean,
   text: string
 ) => {
-  return isReceivingRephrasedText && text.startsWith("```");
+  return isReceivingRephrasedText && text.includes("```");
 };
 const doesMessageHaveRephrasedText = (message: Message) => {
   return (
@@ -63,7 +58,7 @@ const didMessagePassValidation = (message: Message) => {
   return message.validation && message.validation.isValid();
 };
 const isModelResponseCompleted = (text: string) => {
-  return text === "<END>";
+  return text.includes("<END>");
 };
 const isModelResponseAnErrorMessage = (text: string) => {
   return text.startsWith("<ERROR>");
@@ -86,10 +81,8 @@ const createState = (submissionType: string) => {
     isLoadingExtractCustomer: false,
     isLoadingQueryModel: false,
     isLoadingSaveButton: false,
-    isReceivingXmlTag: false,
     isReceivingRephrasedText: false,
     isReceivingValidationJson: false,
-    currentXmlTag: "",
     submissionTimestamp: "",
     websocketTimeout: new WebSocketTimeout(),
   };
@@ -378,34 +371,21 @@ export const useChatStore = (submissionType: string) =>
       processIncompleteModelResponse(message: Message, text: string) {
         // If user is in Validation step
         if (this.submissionStep === SubmissionStep.VALIDATE) {
-          // Received start of XML tag
-          if (isTokenStartOfXmlTag(text)) {
-            this.isReceivingXmlTag = true;
-            this.currentXmlTag = text.trim();
+          // Start of JSON
+          if (isXmlTagStartOfJson(text)) {
+            this.isReceivingValidationJson = true;
+            message.validation.responseString += text;
+
           }
-          // Received end of XML tag
-          else if (isTokenEndOfXmlTag(this.isReceivingXmlTag, text)) {
-            this.currentXmlTag += text.trim();
-            this.isReceivingXmlTag = false;
-            // Completed tag is <JSON> start tag, start receiving the
-            // Validation JSON object.
-            if (isXmlTagStartOfJson(this.currentXmlTag)) {
-              this.isReceivingValidationJson = true;
-            }
-            // Completed tag is </JSON> end tag, stop receiving the
-            // Validation JSON object.
-            else if (isXmlTagEndOfJson(this.currentXmlTag)) {
-              this.isReceivingValidationJson = false;
-              message.validation.parseResponseString();
-            }
-            this.currentXmlTag = "";
+          // End of JSON
+          else if (isXmlTagEndOfJson(text)) {
+            this.isReceivingValidationJson = false;
+            message.validation.responseString += text;
+            message.validation.parseResponseString();
+
           }
-          // Currently receiving pieces of an XML tag
-          else if (this.isReceivingXmlTag) {
-            this.currentXmlTag += text.trim();
-          }
-          // Currently receiving pieces of the Validation JSON object
-          else if (this.isReceivingValidationJson) {
+          // Part of JSON
+          else if (this.isReceivingValidationJson === true){
             message.validation.responseString += text;
           }
           // Else receiving other assistant response text

@@ -20,7 +20,7 @@ def get_answer_chain(memory):
         max_tokens=10,
         cache=False,
         streaming=False,
-        model_id="Claude3Sonnet"
+        model_id="Claude37Sonnet"
     ).get_bedrock_llm()
 
     print(f"Creating action model: {str(action_llm)}")
