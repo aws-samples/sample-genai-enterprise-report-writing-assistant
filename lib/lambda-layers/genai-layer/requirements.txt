@@ -3,3 +3,5 @@ aws_lambda_powertools==2.31.0
 aws_xray_sdk==2.12.1
 langchain-community==0.3.27
 langchain-aws==0.2.27
+aws_lambda_powertools==2.31.0
+aws_xray_sdk==2.12.1

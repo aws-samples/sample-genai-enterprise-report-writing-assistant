@@ -42,7 +42,7 @@ html,body {
     margin: 0px;
 }
 .page-title {
-    font-family: Ember Light !important;
+    font-family: Ember Light, -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif !important;
     font-size: 28px;
     text-align: center;
 }
@@ -167,7 +167,7 @@ html,body {
 .help-content h3 {
     margin-top: 25px;
     margin-bottom: 10px;
-    font-family: Ember Light;
+    font-family: Ember Light, -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
 }
 .help-content p {
     margin-top: 10px;
