@@ -10,6 +10,7 @@ class Message {
   isLoading: boolean;
   error: any;
   retries: number;
+  rephrased?: string;
 
   constructor(
     id: number,

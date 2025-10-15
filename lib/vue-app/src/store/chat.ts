@@ -16,6 +16,11 @@ import {
   getSaveInstructions,
   getStartMessage,
 } from "@/utils/messages";
+import { 
+  parseYamlFrontMatter, 
+  doesResponseContainFrontMatterYaml, 
+  getTextAfterYaml 
+} from "@/utils/yaml";
 import { fetchUserAttributes } from "aws-amplify/auth";
 
 const maxRetries = 5;
@@ -28,27 +33,6 @@ const { addAlert } = uiStore;
 /**
  * Helper functions
  */
-
-const isXmlTagStartOfJson = (tag: string) => {
-  const startTags = ["<JSON>", "<JSON"]
-  return startTags.some(word => tag.includes(word));
-};
-const isXmlTagEndOfJson = (tag: string) => {
-  const startTags = ["</JSON>", "</"," </JSON"]
-  return startTags.some(word => tag.includes(word));
-};
-const isTokenStartOfCodeBlock = (
-  isReceivingRephrasedText: boolean,
-  text: string
-) => {
-  return !isReceivingRephrasedText && text.includes("```");
-};
-const isTokenEndOfCodeBlock = (
-  isReceivingRephrasedText: boolean,
-  text: string
-) => {
-  return isReceivingRephrasedText && text.includes("```");
-};
 const doesMessageHaveRephrasedText = (message: Message) => {
   return (
     message.diff && message.diff.afterText && message.diff.afterText.length > 0
@@ -81,8 +65,7 @@ const createState = (submissionType: string) => {
     isLoadingExtractCustomer: false,
     isLoadingQueryModel: false,
     isLoadingSaveButton: false,
-    isReceivingRephrasedText: false,
-    isReceivingValidationJson: false,
+    responseStream: "",
     submissionTimestamp: "",
     websocketTimeout: new WebSocketTimeout(),
   };
@@ -124,6 +107,9 @@ export const useChatStore = (submissionType: string) =>
         this.messages.push(message);
 
         if (sender === "assistant") {
+          // Reset response stream for new assistant messages
+          this.responseStream = "";
+          
           const newMessage = this.messages[this.messages.length - 1];
           // If we provided text, it is a fake assistant message, so fake stream it.
           if (text) {
@@ -323,42 +309,46 @@ export const useChatStore = (submissionType: string) =>
        */
       processCompletedModelResponse(message: Message) {
         this.websocketTimeout.clear();
-        message.text = message.text.trim();
 
         if (!message || !message.isLoading) {
           return;
         }
 
-        // If user is on validation step
+        // Parse YAML once at completion for structured data
+        const { yaml, text } = parseYamlFrontMatter(this.responseStream);
+  
+        // Ensure final text is set correctly
+        message.text = text.trim();
+
+        // For validation responses, handle validation data
         if (this.submissionStep === SubmissionStep.VALIDATE) {
-          // If the user's submission has passed validation
-          if (didMessagePassValidation(message)) {
-            this.isSubmissionValidated = true;
-            // Advance user to rephrase step
-            this.navigateToNextSubmissionStep();
-            // Display next step instructions to the user
-            const rephraseInstructions = getRephraseInstructions(
-              this.submissionType
-            );
-            this.createNewMessage("assistant", rephraseInstructions);
+          
+          if (yaml?.validation) {
+            message.validation.setFromYaml(yaml.validation);
+
+            if (yaml.validation.all === true) {
+              this.isSubmissionValidated = true;
+              this.navigateToNextSubmissionStep();
+              const rephraseInstructions = getRephraseInstructions(this.submissionType);
+              this.createNewMessage("assistant", rephraseInstructions);
+            }
           }
+          
           // If there was no validation data in the response, it was a question
-          if (!message.validation.json) {
+          if (!yaml?.validation) {
             this.submissionText = "";
           }
-        }
-        // If user is on rephrase step
-        else if (this.submissionStep === SubmissionStep.REPHRASE) {
-          // If the message contains rephrased text
-          if (doesMessageHaveRephrasedText(message)) {
-            // Set the user's imput text as the before text
+        } else if (this.submissionStep === SubmissionStep.REPHRASE) {
+          // For rephrase responses, handle rephrased data
+          if (yaml?.rephrased) {
+            message.rephrased = yaml.rephrased;
+            message.diff.afterText = yaml.rephrased;
             message.diff.beforeText = this.submissionText.trim();
-            // Replace the user's input text with the rephrased text
-            this.submissionText = message.diff.afterText;
-            // Start the diff comparison
             message.diff.compare();
+            this.submissionText = yaml.rephrased;
           }
         }
+
         // Turn off "isLoading" flags
         message.isLoading = false;
         this.isLoadingQueryModel = false;
@@ -369,52 +359,17 @@ export const useChatStore = (submissionType: string) =>
        * Process incomplete LLM response
        */
       processIncompleteModelResponse(message: Message, text: string) {
-        // If user is in Validation step
-        if (this.submissionStep === SubmissionStep.VALIDATE) {
-          // Start of JSON
-          if (isXmlTagStartOfJson(text)) {
-            this.isReceivingValidationJson = true;
-            message.validation.responseString += text;
-
-          }
-          // End of JSON
-          else if (isXmlTagEndOfJson(text)) {
-            this.isReceivingValidationJson = false;
-            message.validation.responseString += text;
-            message.validation.parseResponseString();
-
-          }
-          // Part of JSON
-          else if (this.isReceivingValidationJson === true){
-            message.validation.responseString += text;
-          }
-          // Else receiving other assistant response text
-          else {
-            message.text += text;
-            message.text = message.text.trimStart();
-          }
+        // Accumulate all streaming text for YAML parsing
+        this.responseStream += text;
+        
+        // For display purposes, show only the text after YAML front matter
+        if (doesResponseContainFrontMatterYaml(this.responseStream)) {
+          message.text = getTextAfterYaml(this.responseStream);
+        } else {
+          message.text = this.responseStream;
         }
-        // If user is in Rephrase step
-        else if (this.submissionStep === SubmissionStep.REPHRASE) {
-          // Received start of code block (```)
-          if (isTokenStartOfCodeBlock(this.isReceivingRephrasedText, text)) {
-            this.isReceivingRephrasedText = true;
-          }
-          // Received end of code block (```)
-          else if (isTokenEndOfCodeBlock(this.isReceivingRephrasedText, text)) {
-            this.isReceivingRephrasedText = false;
-          }
-          // Currently receiving pieces of the rephrased text
-          else if (this.isReceivingRephrasedText) {
-            message.diff.afterText += text;
-            message.diff.afterText = message.diff.afterText.trimStart();
-          }
-          // Else receiving other assistant response text
-          else {
-            message.text += text;
-            message.text = message.text.trimStart();
-          }
-        }
+        
+        message.text = message.text.trimStart();
       },
 
       /**

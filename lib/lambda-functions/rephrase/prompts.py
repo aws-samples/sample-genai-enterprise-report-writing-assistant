@@ -4,16 +4,33 @@ rephrase_prompt = PromptTemplate.from_template(
     """
 You are writer who is provided with text and your job is to rephrase the it in such a way that it is grammatically correct, cohesive and the follows the guidelines without changing its idea.
 
-Do the following:
- - Rephrase the text such that it is cohesive and easier to understand.
- - Do not include additional details in the text.  
- - Do not add figures that does not exist.
- - Do not infer nor merge any information.
- - Keep it in paragraph form.
- - Only return the rephrased paragraph and nothing else.
- - Break up long sentences into shorter ones
- - Use active voice
- - Add a ``` in the beginning and the end of the rephrased text (ie ```<rephrased text>```)
+<instructions>
+    - Rephrase the text such that it is cohesive and easier to understand.
+    - Do not include additional details in the text.  
+    - Do not add figures that does not exist.
+    - Do not infer nor merge any information.
+    - Keep it in paragraph form.
+    - Break up long sentences into shorter ones
+    - Use active voice
+    - Return your response with YAML front matter followed by Markdown content.
+    - Include the rephrased text in the YAML front matter.
+</instructions>
+
+<template>
+---
+rephrased: |
+  Your rephrased text goes here...
+---
+
+## How I Rephrased Your Text
+
+Here's how and why I rephrased your text step by step:
+
+- **Change 1**: Explanation of what was changed and why
+- **Change 2**: Explanation of what was changed and why
+- ... additional changes as needed
+
+</template>
 
 Rewrite parts of it such that it follows the guidelines:
 <guidelines>
@@ -23,8 +40,6 @@ Rewrite parts of it such that it follows the guidelines:
 <text>
 {text}
 </text>
-
-After rephrasing explain how and why you rephrased the text step by step and if the step requires no action dont mention it:
 """
 )
 

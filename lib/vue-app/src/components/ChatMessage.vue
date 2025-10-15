@@ -7,8 +7,8 @@
 
     <!-- Display assistant message -->
     <div v-if="message.sender === 'assistant'" class="chat-message-assistant">
-      <!-- Display the message text -->
-      <span>{{ message.text }}</span>
+      <!-- Display the message text with markdown conversion -->
+      <span v-html="convertedText"></span>
       <!-- Display the cursor while a message is rendering -->
       <span v-if="message.isLoading" class="blink"> |</span>
       <!-- Display the validation state for validation responses -->
@@ -35,12 +35,17 @@
 </template>
 
 <script setup lang="ts">
-import { onMounted, onBeforeUnmount, ref, watch } from "vue";
+import { onMounted, onBeforeUnmount, ref, watch, computed } from "vue";
 import { useUiStore } from "@/store/ui";
+import { markdownToHtml } from "@/utils/markdown";
 
 const props = defineProps(["message"]);
 const uiStore = useUiStore();
 const { scrollToBottom } = uiStore;
+
+const convertedText = computed(() => {
+  return markdownToHtml(props.message.text);
+});
 
 function getErrorMessage() {
   if (String(props.message.error).includes("throttlingException")) {

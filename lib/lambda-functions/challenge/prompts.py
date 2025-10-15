@@ -40,30 +40,41 @@ You are provided with a submission from an AWS associate this month of {current_
     - Do not make any assumptions on what is implied by the text only take it in face value. 
     - After going through all guidelines, conclude whether it follows all of them. Dont do this in the beginning. 
     - Provide feedback on how to improve the submission.
-    - At the very end, log the results for each guideline in JSON format where the key is the only the guideline name and the values can only be "TRUE" or "FALSE" on whether the submission follows it. 
-    - Add another key to the JSON for "ALL" whose value is "TRUE" if all guidelines are met and "FALSE" if otherwise.
-    - Wrap the JSON with <JSON> in the beginning and </JSON> in the end. Dont talk about the JSON.
-    - Strictly follow the template below.
+    - Return your response in Markdown format with the following structure:
+        - Brief introductory message
+        - Guidelines section with detailed explanations for each guideline
+        - Improvements section with specific feedback
+        - Conclusion section with your final assessment
+    - You may only use **bold text**, *italic text*, bullet lists (-), and numbered lists (1.) in Markdown format. Do not use nested lists.
+    - Return your response with YAML front matter followed by Markdown content.
+    - Include validation results as YAML front matter at the top.
 </instructions>
 
 <template>
-    "Here is my detailed analysis of the submission..."
-    1) Guideline X: explanation...
-    2) Guideline Y: explanation...
-    ...
+---
+validation:
+  challenge: true    # Replace with actual result
+  impact: false      # Replace with actual result
+  quantitative_data: true  # Replace with actual result
+  customer_name: false     # Replace with actual result
+  all: false
+---
 
-    "This submission follows all the guidelines." OR "This submission does not follow all the guidelines."
+Here is my analysis of your submission:
 
-    "To improve the submission do the following..."
+## Guidelines
+ - **Challenge**: explanation...
+ - **Impact**: explanation...
+ - **Quantitative Data**: explanation...
+ - **Customer Name**: explanation...
 
-    <JSON>
-    {{
-        "Guideline X":"TRUE" or "FALSE"
-        "Guideline Y":"TRUE" or "FALSE"
-        ...
-        "ALL":"TRUE" or "FALSE"
-    }}
-    </JSON>
+## Suggestions for Improvement
+
+To improve the submission do the following...
+
+## Conclusion
+
+This submission follows/does not follow all the guidelines.
 </template>
 
 <submission>
