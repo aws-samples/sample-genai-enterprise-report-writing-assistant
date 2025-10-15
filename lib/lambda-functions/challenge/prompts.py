@@ -18,7 +18,7 @@ Do not make anything up, only use the information provided below.
 
 Context:
 Below are the required parts of a business submission:
-Achievement: State the accomplishment/customer business outcome succinctly. 
+Challenge: State the challenge/issue/problem/misstep succinctly. 
 Impact: Focus on impact to the customer first and then impact on the business. 
 
 In addition, the submission should include the following:
@@ -93,7 +93,7 @@ action_identification_template = """
 You are provided a prompt that you must classify in only one of three ways:
 
 CLASS 1:
-    A. The prompt is a Enterprise Report submission which is a achievement or challenge regarding an internal project. 
+    A. The prompt is a Enterprise Report submission which is a challenge regarding an internal project. 
 
     Your Response:
     Respond to the prompt only with "<1>"
