@@ -49,16 +49,37 @@ export class LambdaFunctions extends Construct {
         ManagedPolicy.fromAwsManagedPolicyName(
           "service-role/AWSLambdaBasicExecutionRole"
         ),
-        ManagedPolicy.fromAwsManagedPolicyName("CloudWatchLogsFullAccess"),
-        ManagedPolicy.fromAwsManagedPolicyName("AmazonDynamoDBFullAccess"),
       ],
     });
 
-    // Create IAM Policy for Bedrock permissions
-    const bedrockPolicy = new Policy(this, "BedrockPolicy", {
-      policyName: "AmazonBedrockAccessPolicy",
+    // DynamoDB permissions (replacing AmazonDynamoDBFullAccess)
+    const dynamoDbPolicy = new Policy(this, "DynamoDbPolicy", {
       statements: [
         new PolicyStatement({
+          effect: Effect.ALLOW,
+          actions: [
+            "dynamodb:GetItem",
+            "dynamodb:PutItem",
+            "dynamodb:UpdateItem",
+            "dynamodb:DeleteItem",
+            "dynamodb:Query",
+            "dynamodb:Scan"
+          ],
+          resources: [
+            `arn:aws:dynamodb:${Aws.REGION}:${Aws.ACCOUNT_ID}:table/${props.conversationMemoryTableName}`,
+            `arn:aws:dynamodb:${Aws.REGION}:${Aws.ACCOUNT_ID}:table/${props.associateSubmissionTableName}`,
+            `arn:aws:dynamodb:${Aws.REGION}:${Aws.ACCOUNT_ID}:table/${props.associateSubmissionTableName}/index/*`
+          ],
+        }),
+      ],
+    });
+    lambdaExecutionRole.attachInlinePolicy(dynamoDbPolicy);
+
+    // Bedrock permissions
+    const bedrockPolicy = new Policy(this, "BedrockPolicy", {
+      statements: [
+        new PolicyStatement({
+          effect: Effect.ALLOW,
           actions: [
             "bedrock:InvokeModel",
             "bedrock:InvokeModelWithResponseStream",
@@ -67,24 +88,22 @@ export class LambdaFunctions extends Construct {
             `arn:aws:bedrock:*::foundation-model/*`,
             `arn:aws:bedrock:*:${Aws.ACCOUNT_ID}:inference-profile/*`,
           ],
-          effect: Effect.ALLOW,
         }),
       ],
     });
     lambdaExecutionRole.attachInlinePolicy(bedrockPolicy);
 
-    // Create IAM Policy for WebSocket API permissions
-    const manageApiPolicy = new Policy(this, "ManageApiPolicy", {
-      policyName: "ManageApiConnectionsPolicy",
+    // WebSocket API permissions
+    const websocketPolicy = new Policy(this, "WebSocketPolicy", {
       statements: [
         new PolicyStatement({
+          effect: Effect.ALLOW,
           actions: ["execute-api:ManageConnections"],
           resources: [props.websocketArnForExecuteApi],
-          effect: Effect.ALLOW,
         }),
       ],
     });
-    lambdaExecutionRole.attachInlinePolicy(manageApiPolicy);
+    lambdaExecutionRole.attachInlinePolicy(websocketPolicy);
 
     // Create the GenAI Lambda Layer
     const genAiLayer = new PythonLayerVersion(this, 'GenAiLayer', {
@@ -266,7 +285,7 @@ export class LambdaFunctions extends Construct {
 
     const recommendSubmissionFunction = new LambdaFunction(
       this,
-      "RecommendSubmissions",
+      "RecommendSubmission",
       {
         description: "Recommend submission",
         architecture: Architecture.ARM_64,
@@ -290,6 +309,7 @@ export class LambdaFunctions extends Construct {
       }
     );
 
+    // Assign the functions to public properties
     this.achievementFunction = achievementFunction;
     this.challengeFunction = challengeFunction;
     this.submissionFunction = submissionFunction;
