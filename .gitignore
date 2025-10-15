@@ -1,35 +1,41 @@
 # Dependencies
 node_modules/
-*/node_modules/
-
-# CDK
-cdk.out/
-*.js
-*.d.ts
-!jest.config.js
+lib/vue-app/node_modules/
 
 # Build outputs
-build/
-dist/
+cdk.out/
+lib/vue-app/build/
+lib/vue-app/dist/
 
 # Environment files
 .env
 .env.local
-.env.*.local
+.env.production
+lib/vue-app/.env.local
 
-# IDE files
+# IDE
 .vscode/
 .idea/
-*.swp
-*.swo
 
-# OS files
+# OS
 .DS_Store
 Thumbs.db
 
 # Logs
 *.log
 npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
 
-# Coverage
+# Runtime data
+pids
+*.pid
+*.seed
+*.pid.lock
+
+# Coverage directory used by tools like istanbul
 coverage/
+
+# Temporary folders
+tmp/
+temp/
