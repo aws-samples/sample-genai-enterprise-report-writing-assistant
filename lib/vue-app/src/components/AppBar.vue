@@ -1,6 +1,6 @@
 <template>
   <v-app-bar flat app style="position: fixed">
-    <v-app-bar-title>
+    <v-app-bar-title style="min-width: 500px;">
       <button
         class="app-bar-title"
         @click="router.push('/')"
